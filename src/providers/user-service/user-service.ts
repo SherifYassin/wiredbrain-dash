@@ -4,6 +4,7 @@ import { Injectable } from '@angular/core';
 import { AlertController } from 'ionic-angular';
 import { Storage } from '@ionic/storage';
 import { AngularFireDatabase, AngularFireList } from 'angularfire2/database';
+import { RewardServiceProvider } from '../reward-service/reward-service';
 
 /*
   Generated class for the UserServiceProvider provider.
@@ -13,12 +14,13 @@ import { AngularFireDatabase, AngularFireList } from 'angularfire2/database';
 */
 @Injectable()
 export class UserServiceProvider {
-
   items: AngularFireList<any>;
   success: boolean;
+  user: string;
 
   constructor(public alerCtrl: AlertController, public afAuth: AngularFireAuth,
-    private storage: Storage, private fbDb: AngularFireDatabase) {
+    private storage: Storage, private fbDb: AngularFireDatabase,
+    private rewardService: RewardServiceProvider) {
     this.items = fbDb.list('/users');
   }
 
@@ -34,7 +36,11 @@ export class UserServiceProvider {
   logOut(){
     this.storageControl('delete');
     this.afAuth.auth.signOut()
-      .then(LogedOut => this.displayAlert("Logged Out","Come Back and visit soon"))
+      .then(LogedOut => {
+        this.displayAlert("Logged Out","Come Back and visit soon");
+        this.success = false;
+      }
+        )
       .catch(err => this.displayAlert("Error",err));
   }
 
@@ -85,7 +91,7 @@ export class UserServiceProvider {
   updateUser(theUser, theUserData){
     let newData= {
       creation: theUserData.creation,
-      logins: theUserData.logins + 1,
+      logins: theUserData.logins,
       rewardCount: theUserData.rewardCount,
       lastLogin: new Date().toLocaleString(),
       id: theUserData.id
@@ -95,7 +101,7 @@ export class UserServiceProvider {
       rewardCount: newData.rewardCount,
       lastLogin: newData.lastLogin
     });
-    this.storageControl('set', theUser, newData);
+    return this.storageControl('set', theUser, newData);
   }
 
   logOn(user, password){
@@ -108,7 +114,16 @@ export class UserServiceProvider {
             then(result => this.displayAlert(user,'New account saved for this user'));
          }
           else{
-           this.updateUser(user,retruned);
+            this.rewardService.rewardsCheck(user,retruned)
+            .then(
+              rewardResult => {
+                this.updateUser(user,retruned)
+                .then(
+                  updated => console.log(user, updated)
+                )
+              }
+            )
+           ;
          }
         })
         this.success = true;

@@ -35,14 +35,17 @@ export class LoginPage {
       this.userService.displayAlert('Error', 'You must enter username and password');
     }
     else{
-      this.userService.logOn(this.login.email, this.login.passWrd);
-      if(this.userService.success){
-        this.navCtrl.push(HomePage);
-      }
-      else{
-        this.login.email = '';
-        this.login.passWrd = '';
-      }
+      this.userService.logOn(this.login.email, this.login.passWrd).then(
+        returned => {
+          if(this.userService.success){
+            this.navCtrl.push(HomePage);
+          }
+          else{
+            this.login.email = '';
+            this.login.passWrd = '';
+          }
+        }
+      )
     }
   }
 

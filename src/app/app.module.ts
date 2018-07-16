@@ -13,13 +13,25 @@ import { MyApp } from './app.component';
 import { HomePage } from '../pages/home/home';
 import { UserServiceProvider } from '../providers/user-service/user-service';
 import { IonicStorageModule } from '@ionic/storage';
+import { RewardServiceProvider } from '../providers/reward-service/reward-service';
+
+import { RewardModalPageModule } from '../pages/reward-modal/reward-modal.module';
+
+/* export const firebaseConfig = {
+  apiKey: "AIzaSyA5EjI5f5D_Fvada3QD0NaQb_Oir81hovo",
+  authDomain: "wired-brain-dashboard.firebaseapp.com",
+  databaseURL: "http://wired-brain-dashboard.firebasio.com",
+  storageBucket: "wired-brain-dashboard.appspot.com",
+  messagingSenderId: "970805425096"
+}; */
 
 export const firebaseConfig = {
-  apiKey: "##########################",
-  authDomain: "##########################",
-  databaseURL: "##########################",
-  storageBucket: "##########################",
-  messagingSenderId: "##########################"
+  apiKey: "##############################################",
+  authDomain: "##############################################",
+  databaseURL: "##############################################",
+  projectId: "##############################################",
+  storageBucket: "##############################################",
+  messagingSenderId: "##############################################"
 };
 
 @NgModule({
@@ -33,7 +45,8 @@ export const firebaseConfig = {
     AngularFireModule.initializeApp(firebaseConfig),
     AngularFireDatabaseModule,
     AngularFireAuthModule,
-    IonicStorageModule.forRoot()
+    IonicStorageModule.forRoot(),
+    RewardModalPageModule
   ],
   bootstrap: [IonicApp],
   entryComponents: [
@@ -44,7 +57,8 @@ export const firebaseConfig = {
     StatusBar,
     SplashScreen,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
-    UserServiceProvider
+    UserServiceProvider,
+    RewardServiceProvider
   ]
 })
 export class AppModule {}
